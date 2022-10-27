@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+{% bootstrap_css %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+{% block body %}
+  <div>
+
+    <h1>{{ review.title }}</h1>
+    <h3>영화제목 :{{ review.movie_name }}</h3>
+    <h3>영화내용 :
+      {{ review.content }}</h3>
+    <h3>평점 :
+      {{ review.grade }}</h3>
+
+    <a href="{% url 'reviews:update' review.pk %}">수정</a>
+    <a href="{% url 'reviews:delete' review.pk %}">삭제</a>
+  </div>
+  <h4 class="my-3">댓글</h4>
+  {% if request.user.is_authenticated %}
+
+    <form action="{% url 'reviews:comment_create' review.pk %}" method="POST">
+      {% csrf_token %}
+      {% bootstrap_form comment_form layout='inline'%}
+      {% bootstrap_button button_type="submit" content="OK"%}
+    </form>
+    <hr>
+    {% for comment in comments %}
+      <p>
+        {{ comment.user.username }}
+        |
+        {{ comment.content }}</p>
+      <hr>
+      <a href="{% url 'reviews:comment_delete' comment.review.pk comment.pk %}">삭제</a>
+      {% empty %}
+      <p>댓글이 없어요 ㅠ_ㅠ</p>
+    {% endfor %}
+  {% else %}
+  {% endif %}
+{% endblock %}
+{% bootstrap_javascript %}
