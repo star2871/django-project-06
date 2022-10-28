@@ -17,7 +17,7 @@ def index(request):
 def create(request):
     # title = request.POST.get("title")
     # content = request.POST.get("content")
-    # Article.objects.create(title=title, content=content)
+    # Review.objects.create(title=title, content=content)
     # return redirect("articles:index")
     if request.method == "POST":
         # DB에 저장하는 로직
@@ -101,4 +101,19 @@ def comment_delete(request, pk, comment_pk):
 
     if comment.user == request.user:
         comment.delete()
+    return redirect("reviews:detail", pk)
+
+
+@login_required
+def like(request, pk):
+    review = Review.objects.get(pk=pk)
+    # 만약에 로그인한 유저가 이 글을 좋아요를 눌렀다면,
+    # if review.like_users.filter(id=request.user.id).exists():
+    if request.user in review.like_users.all():
+        # 좋아요 삭제하고
+        review.like_users.remove(request.user)
+    else:
+        # 좋아요 추가하고
+        review.like_users.add(request.user)
+    # 상세 페이지로 redirect
     return redirect("reviews:detail", pk)

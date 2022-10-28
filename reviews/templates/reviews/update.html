@@ -4,7 +4,9 @@ nes (18 sloc) 504 Bytes
 {% load static %}
 {% load django_bootstrap5 %}
 {% bootstrap_css %}
-{% block css %}{% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
 {% block body %}
   <h1>글 수정하기</h1>
 
